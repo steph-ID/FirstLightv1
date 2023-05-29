@@ -30,9 +30,14 @@ class FIRSTLIGHT_API AFirstLightArenaGameMode : public AFirstLightGameMode
 	GENERATED_BODY()
 	
 	virtual void BeginPlay() override;
+	
+	UFUNCTION(BlueprintCallable)
+	void NewArenaGame();
 
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentGameState() const;
+	
+	UFUNCTION(BlueprintCallable)
 	void BossDefeated();
 
 	UFUNCTION(BlueprintCallable)
@@ -57,6 +62,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "First Light|Game Details")
 	float GameCountdownDuration = 5.0f;
 
+	UFUNCTION(BlueprintCallable)
 	void DisplayCountdown();
 	
 	UPROPERTY()
@@ -80,6 +86,9 @@ protected:
 
 	//void OnLevelSequenceFinished();
 
+	UFUNCTION(BlueprintCallable)
 	void SpawnBoss();
+	
+	UFUNCTION(BlueprintCallable)
 	void ShowResults();
 };

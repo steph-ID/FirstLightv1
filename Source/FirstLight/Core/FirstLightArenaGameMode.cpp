@@ -21,7 +21,10 @@ AFirstLightArenaGameMode::AFirstLightArenaGameMode()
 void AFirstLightArenaGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+void AFirstLightArenaGameMode::NewArenaGame()
+{
 	CurrentGameState = EGameState::Waiting;
 	DisplayCountdown();
 

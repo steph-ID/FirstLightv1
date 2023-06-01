@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "FirstLightGameTypes.generated.h"
 
-USTRUCT(BlueprintType)
-/*struct FMyStruct
+/*USTRUCT(BlueprintType)
+struct FMyStruct
 {
 	GENERATED_BODY()
 

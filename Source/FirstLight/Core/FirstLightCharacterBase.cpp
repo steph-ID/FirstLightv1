@@ -5,8 +5,10 @@
 #include "Components/CapsuleComponent.h"
 #include "FirstLight/AbilitySystem/Abilities/FLGameplayAbility.h"
 #include "FirstLight/ActorComponents/FLCharacterMovementComponent.h"
+#include "FirstLight/DataAssets/CharacterDataAsset.h"
 #include "GAS/FLAbilitySystemComponent.h"
 #include "GAS/FLAttributeSetBase.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AFirstLightCharacterBase::AFirstLightCharacterBase(const class FObjectInitializer& ObjectInitializer) :
@@ -355,4 +357,114 @@ void AFirstLightCharacterBase::SetStamina(float Stamina)
 	{
 		AttributeSetBase->SetStamina(Stamina);
 	}
+}
+
+/*
+ * Character Data Code
+*/
+
+bool AFirstLightCharacterBase::ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> Effect, FGameplayEffectContextHandle InEffectContext) const
+{
+	if(!Effect.Get()) return false;
+	FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(Effect, 1, InEffectContext);
+	
+	if (SpecHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		return ActiveGEHandle.WasSuccessfullyApplied();
+	}
+	return false;
+}
+
+void AFirstLightCharacterBase::ApplyStartupGameplayEffects()
+{
+	// Can run on Server and Client
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
+
+		for (auto CharacterEffect : CharacterData.Effects)
+		{
+			ApplyGameplayEffectToSelf(CharacterEffect, EffectContext);
+		}
+	}
+}
+
+void AFirstLightCharacterBase::AddStartupGameplayAbilities()
+{
+	//check(AbilitySystemComponent);
+	
+	// Grant abilities, but only on the server
+	if (HasAuthority() && !bAbilitiesInitialized)
+	{
+		/*for (TSubclassOf<UFLGameplayAbility> DefaultAbility : CharacterData.Abilities)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(
+				DefaultAbility, 1,
+				static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID),
+				this));
+		}*/
+		for (auto DefaultAbility : CharacterData.Abilities)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(DefaultAbility));
+		}
+
+		// Now apply passives
+		for (const TSubclassOf<UGameplayEffect>& GameplayEffect : PassiveGameplayEffects)
+		{
+			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+			EffectContext.AddSourceObject(this);
+
+			FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(
+				GameplayEffect, 1, EffectContext);
+
+			if (NewHandle.IsValid())
+			{
+				FActiveGameplayEffectHandle ActiveGameplayEffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(
+					*NewHandle.Data.Get(), GetAbilitySystemComponent());
+			}
+		}
+		
+		bAbilitiesInitialized = true;
+	}
+}
+
+void AFirstLightCharacterBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if(IsValid(CharacterDataAsset))
+	{
+		SetCharacterData(CharacterDataAsset->CharacterData);
+	}
+}
+
+FCharacterData AFirstLightCharacterBase::GetCharacterData() const
+{
+	return CharacterData;
+}
+
+void AFirstLightCharacterBase::SetCharacterData(const FCharacterData& InCharacterData)
+{
+	CharacterData = InCharacterData;
+
+	InitFromCharacterData(CharacterData);
+}
+
+void AFirstLightCharacterBase::InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication)
+{
+	
+}
+
+void AFirstLightCharacterBase::OnRep_CharacterData()
+{
+	InitFromCharacterData(CharacterData, true);
+}
+
+void AFirstLightCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AFirstLightCharacterBase, CharacterData);
 }

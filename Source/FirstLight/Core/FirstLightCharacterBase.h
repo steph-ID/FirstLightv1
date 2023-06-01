@@ -81,13 +81,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "First Light|Character|Attributes")
 	float GetMoveSpeedBaseValue() const;
 
-
 	virtual void Die();
 
 	UFUNCTION(BlueprintCallable, Category = "First Light|Character")
 	virtual void FinishDying();
 
 protected:
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -146,4 +146,39 @@ protected:
 	virtual void SetHealth(float Health);
 	virtual void SetMana(float Mana);
 	virtual void SetStamina(float Stamina);
+
+	/**
+	 * Character Data functions
+	 */
+	void AddStartupGameplayAbilities();
+	void ApplyStartupGameplayEffects();
+	
+	virtual void PostInitializeComponents() override;
+	
+	UPROPERTY(ReplicatedUsing = OnRep_CharacterData, EditAnywhere)
+	FCharacterData CharacterData;
+
+	UFUNCTION()
+	void OnRep_CharacterData();
+	
+	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
+
+	UPROPERTY(EditDefaultsOnly, Category = "First Light")
+	class UCharacterDataAsset* CharacterDataAsset;
+	
+public:
+	bool ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> Effect, FGameplayEffectContextHandle InEffectContext) const;
+
+	UFUNCTION(BlueprintCallable)
+	FCharacterData GetCharacterData() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetCharacterData(const FCharacterData& InCharacterData);
+
+	UPROPERTY()
+	uint8 bAbilitiesInitialized:1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="First Light|Abilities")
+	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
+	
 };

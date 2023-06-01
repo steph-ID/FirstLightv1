@@ -330,18 +330,15 @@ void AFirstLightCharacter::BindASCInput()
 
 void AFirstLightCharacter::ApplyStartupEffects()
 {
-	if(GetLocalRole() == ROLE_Authority)
+	// Can run on Server and Client
+	if (GetLocalRole() == ROLE_Authority)
 	{
-		// Can run on Server and Client
-		if (GetLocalRole() == ROLE_Authority)
-		{
-			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-			EffectContext.AddSourceObject(this);
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
 
-			for (auto CharacterEffect : CharacterData.Effects)
-			{
-				ApplyGameplayEffectToSelf(CharacterEffect, EffectContext);
-			}
+		for (auto CharacterEffect : CharacterData.Effects)
+		{
+			ApplyGameplayEffectToSelf(CharacterEffect, EffectContext);
 		}
 	}
 }

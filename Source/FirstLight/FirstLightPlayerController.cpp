@@ -26,7 +26,7 @@ void AFirstLightPlayerController::BeginPlay()
 	//GameModeRef = Cast<AFirstLightGameMode>(GetWorld()->GetAuthGameMode());
 	PossessedPawn = Cast<AFirstLightCharacter>(GetPawn());
 	const AFirstLightPlayerState* FLPlayerState = GetPlayerState<AFirstLightPlayerState>();
-	AbilitySystemComponent = FLPlayerState->GetFLAbilitySystemComponent();
+	AbilitySystemComponent = FLPlayerState->GetAbilitySystemComponent();
 }
 
 void AFirstLightPlayerController::CreateHUD()

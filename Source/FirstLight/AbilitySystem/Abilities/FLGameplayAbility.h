@@ -7,6 +7,7 @@
 #include "FirstLight/FirstLight.h"
 #include "FLGameplayAbility.generated.h"
 
+class AFirstLightCharacter;
 /**
  * 
  */

@@ -65,7 +65,7 @@ class FIRSTLIGHT_API AFirstLightPlayerController : public APlayerController
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ActionBar_5;
 
-	UFLAbilitySystemComponent* AbilitySystemComponent;
+	UAbilitySystemComponent* AbilitySystemComponent;
 
 public:
 

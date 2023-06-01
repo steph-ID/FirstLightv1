@@ -129,16 +129,16 @@ protected:
 	UAnimMontage* DeathMontage;
 
 	// Default abilities for this Character. These will be removed on Character death and regiven if Character respawns.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "First Light|Abilities")
 	TArray<TSubclassOf<class UFLGameplayAbility>> CharacterAbilities;
 
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "First Light|Abilities")
 	TSubclassOf<class UGameplayEffect> DefaultAttributes;
 
 	// These effects are only applied one time on startup
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "First Light|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
@@ -275,5 +275,3 @@ protected:
 public:
 	void OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data);
 };
-
-

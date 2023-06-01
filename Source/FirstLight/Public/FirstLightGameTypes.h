@@ -6,6 +6,18 @@
 #include "FirstLightGameTypes.generated.h"
 
 USTRUCT(BlueprintType)
+/*struct FMyStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Member1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Member2;
+};*/
+
+USTRUCT(BlueprintType)
 struct FCharacterData
 {
 	GENERATED_USTRUCT_BODY()

@@ -3,7 +3,8 @@
 
 #include "FootstepsComponent.h"
 
-#include "FirstLight/Core/FirstLightCharacter.h"
+//#include "FirstLight/Core/FirstLightCharacter.h"
+#include "FirstLight/Core/FirstLightCharacterBase.h"
 #include "FirstLight/PhysicalMaterials/FirstLightPhysicalMaterial.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -37,7 +38,8 @@ void UFootstepsComponent::BeginPlay()
 
 void UFootstepsComponent::HandleFootstep(EFoot Foot)
 {
-	if(AFirstLightCharacter* Character = Cast<AFirstLightCharacter>(GetOwner()))
+	//if(AFirstLightCharacter* Character = Cast<AFirstLightCharacter>(GetOwner()))
+	if(AFirstLightCharacterBase* Character = Cast<AFirstLightCharacterBase>(GetOwner()))
 	{
 		const int32 DebugShowFootsteps = CVarShowFootsteps.GetValueOnAnyThread();
 		

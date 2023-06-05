@@ -13,6 +13,13 @@ UCLASS()
 class FIRSTLIGHT_API AFirstLightPlayerCharacter : public AFirstLightCharacterBase
 {
 	GENERATED_BODY()
+	
+	/** MappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputMappingContext* DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	bool Crouched = false;
 
 public:
 	AFirstLightPlayerCharacter(const class FObjectInitializer& ObjectInitializer);
@@ -52,10 +59,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "First Light|Camera")
 	FVector StartingCameraBoomLocation;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "First Light|Camera")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "First Light|Camera", meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "First Light|Camera")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "First Light|Camera", meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)

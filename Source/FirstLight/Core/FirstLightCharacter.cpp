@@ -16,8 +16,8 @@
 #include "FirstLight/ActorComponents/FootstepsComponent.h"
 #include "FirstLightPlayerState.h"
 #include "FirstLight/DataAssets/CharacterDataAsset.h"
-#include "GAS/FLAttributeSetBase.h"
-#include "GAS/FLAbilitySystemComponent.h"
+#include "FirstLight/AbilitySystem/FLAttributeSetBase.h"
+#include "FirstLight/AbilitySystem/FLAbilitySystemComponent.h"
 
 #include "Net/UnrealNetwork.h"
 
@@ -25,7 +25,7 @@
 // AFirstLightCharacter
 
 AFirstLightCharacter::AFirstLightCharacter(const class FObjectInitializer& ObjectInitializer) :
-	Super(ObjectInitializer.SetDefaultSubobjectClass<UFLCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -189,7 +189,7 @@ void AFirstLightCharacter::Die()
 	//GetCharacterMovement()->GravityScale = 0;
 	//GetCharacterMovement()->Velocity = FVector(0);
 
-	OnCharacterDied.Broadcast(this);
+	//OnCharacterDied.Broadcast(this);
 
 	if (AbilitySystemComponent.IsValid())
 	{

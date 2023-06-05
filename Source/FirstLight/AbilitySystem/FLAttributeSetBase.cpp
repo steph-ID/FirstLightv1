@@ -1,10 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GAS/FLAttributeSetBase.h"
+#include "FLAttributeSetBase.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
-#include "FirstLight/Core/FirstLightCharacter.h"
+//#include "FirstLight/Core/FirstLightCharacter.h"
+#include "FirstLight/Core/FirstLightCharacterBase.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -41,17 +42,18 @@ void UFLAttributeSetBase::PreAttributeChange(const FGameplayAttribute& Attribute
 	else if (Attribute == GetMaxMovementSpeedAttribute())
 	{
 		// Cannot slow less than 150 units/s and cannot boost more than 1000 units/s
-		NewValue = FMath::Clamp<float>(NewValue, 150, 1000);
-	}
+		NewValue = FMath::Clamp<float>(NewValue, 150, 2000);
+	}/*
 	else if (Attribute == GetArenaMaxXPAttribute())
 	{
 		AdjustAttributeForMaxChange(ArenaXP, ArenaMaxXP, NewValue, GetArenaXPAttribute());
-	}
+	}*/
 }
 
 void UFLAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+	
 	FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
 	UAbilitySystemComponent* Source = Context.GetOriginalInstigatorAbilitySystemComponent();
 	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
@@ -65,18 +67,21 @@ void UFLAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 	
 	AActor* TargetActor = nullptr;
 	AController* TargetController = nullptr;
-	AFirstLightCharacter* TargetCharacter = nullptr;
+	//AFirstLightCharacter* TargetCharacter = nullptr;
+	AFirstLightCharacterBase* TargetCharacter = nullptr;
 	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
 	{
 		TargetActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
 		TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
-		TargetCharacter = Cast<AFirstLightCharacter>(TargetActor);
+		//TargetCharacter = Cast<AFirstLightCharacter>(TargetActor);
+		TargetCharacter = Cast<AFirstLightCharacterBase>(TargetActor);
 	}
 	
 	// Get the Source actor
 	AActor* SourceActor = nullptr;
 	AController* SourceController = nullptr;
-	AFirstLightCharacter* SourceCharacter = nullptr;
+	//AFirstLightCharacter* SourceCharacter = nullptr;
+	AFirstLightCharacterBase* SourceCharacter = nullptr;
 	if (Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
 	{
 		SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
@@ -92,11 +97,13 @@ void UFLAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 		// Use the controller to find the source pawn
 		if (SourceController)
 		{
-			SourceCharacter = Cast<AFirstLightCharacter>(SourceController->GetPawn());
+			//SourceCharacter = Cast<AFirstLightCharacter>(SourceController->GetPawn());
+			SourceCharacter = Cast<AFirstLightCharacterBase>(SourceController->GetPawn());
 		}
 		else
 		{
-			SourceCharacter = Cast<AFirstLightCharacter>(SourceActor);
+			//SourceCharacter = Cast<AFirstLightCharacter>(SourceActor);
+			SourceCharacter = Cast<AFirstLightCharacterBase>(SourceActor);
 		}
 
 		// Set the causer actor based on context if it's set
@@ -145,23 +152,26 @@ void UFLAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 				//UE_LOG(LogTemp, Log, TEXT("%s() %s Damage Received: %f"), TEXT(__FUNCTION__), *GetOwningActor()->GetName(), LocalDamageDone);
 
 				// Play HitReact animation and sound with a multicast RPC.
-				/*const FHitResult* Hit = Data.EffectSpec.GetContext().GetHitResult();
+				const FHitResult* Hit = Data.EffectSpec.GetContext().GetHitResult();
 
 				if (Hit)
 				{
-					EGDHitReactDirection HitDirection = TargetCharacter->GetHitReactDirection(Data.EffectSpec.GetContext().GetHitResult()->Location);
+					EFLHitReactDirection HitDirection = TargetCharacter->GetHitReactDirection(Data.EffectSpec.GetContext().GetHitResult()->Location);
 					switch (HitDirection)
 					{
-					case EGDHitReactDirection::Left:
+					case EFLHitReactDirection::Left:
 						TargetCharacter->PlayHitReact(HitDirectionLeftTag, SourceCharacter);
 						break;
-					case EGDHitReactDirection::Front:
+					case EFLHitReactDirection::Front:
 						TargetCharacter->PlayHitReact(HitDirectionFrontTag, SourceCharacter);
 						break;
-					case EGDHitReactDirection::Right:
+					case EFLHitReactDirection::Right:
 						TargetCharacter->PlayHitReact(HitDirectionRightTag, SourceCharacter);
 						break;
-					case EGDHitReactDirection::Back:
+					case EFLHitReactDirection::Back:
+						TargetCharacter->PlayHitReact(HitDirectionBackTag, SourceCharacter);
+						break;
+					default:
 						TargetCharacter->PlayHitReact(HitDirectionBackTag, SourceCharacter);
 						break;
 					}
@@ -171,7 +181,7 @@ void UFLAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 					// No hit result. Default to front.
 					TargetCharacter->PlayHitReact(HitDirectionFrontTag, SourceCharacter);
 				}
-
+/*
 				// Show damage number for the Source player unless it was self damage
 				if (SourceActor != TargetActor)
 				{
@@ -211,16 +221,25 @@ void UFLAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 			}
 		}
 	}
-	
-	if(Data.EvaluatedData.Attribute == GetHealthAttribute())
+	else if(Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
 
-		if (TargetCharacter)
+		/*if (TargetCharacter)
 		{
 			// Call for all health changes
 			TargetCharacter->HandleHealthChanged(DeltaValue, SourceTags);
-		}
+		}*/
+	} // Health
+	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		// Handle mana changes.
+		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+	} // Mana
+	else if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
+	{
+		// Handle stamina changes.
+		SetStamina(FMath::Clamp(GetStamina(), 0.0f, GetMaxStamina()));
 	}
 	else if(Data.EvaluatedData.Attribute == GetMaxMovementSpeedAttribute())
 	{

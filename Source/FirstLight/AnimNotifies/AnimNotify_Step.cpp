@@ -3,7 +3,8 @@
 
 #include "AnimNotify_Step.h"
 
-#include "FirstLight/Core/FirstLightCharacter.h"
+//#include "FirstLight/Core/FirstLightCharacter.h"
+#include "FirstLight/Core/FirstLightCharacterBase.h"
 
 void UAnimNotify_Step::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
@@ -11,7 +12,8 @@ void UAnimNotify_Step::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBas
 
 	check(MeshComp);
 
-	AFirstLightCharacter* Character = MeshComp ? Cast<AFirstLightCharacter>(MeshComp->GetOwner()) : nullptr;
+	//AFirstLightCharacter* Character = MeshComp ? Cast<AFirstLightCharacter>(MeshComp->GetOwner()) : nullptr;
+	AFirstLightCharacterBase* Character = MeshComp ? Cast<AFirstLightCharacterBase>(MeshComp->GetOwner()) : nullptr;
 	if (Character)
 	{
 		if (UFootstepsComponent* FootstepsComponent = Character->GetFootstepsComponent())

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
-#include "GAS/FLAttributeSetBase.h"
+#include "FirstLight/AbilitySystem/FLAttributeSetBase.h"
 #include "FirstLightPlayerState.generated.h"
 
 /**

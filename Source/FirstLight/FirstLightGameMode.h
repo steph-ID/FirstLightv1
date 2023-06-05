@@ -19,7 +19,9 @@ public:
 protected:
 	float RespawnDelay;
 
-	TSubclassOf<class AFirstLightCharacter> PlayerClass;
+	//TSubclassOf<class AFirstLightCharacter> PlayerClass;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "First Light")
+	TSubclassOf<class AFirstLightPlayerCharacter> PlayerClass;
 
 	AActor* EnemySpawnPoint;
 

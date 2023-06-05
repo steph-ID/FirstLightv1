@@ -3,8 +3,8 @@
 
 #include "GA_Jump.h"
 
-#include "AbilitySystemComponent.h"
 #include "GameFramework/Character.h"
+#include "FirstLight/AbilitySystem/FLAbilitySystemComponent.h"
 
 UGA_Jump::UGA_Jump()
 {
@@ -20,7 +20,7 @@ bool UGA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	{
 		return false;
 	}
-
+	
 	const ACharacter* Character = CastChecked<ACharacter>(ActorInfo->AvatarActor.Get(), ECastCheckedType::NullAllowed);
 	return Character->CanJump();
 }

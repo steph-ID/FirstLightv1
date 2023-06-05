@@ -3,13 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FirstLightCharacter.h"
+#include "AbilitySystemInterface.h"
+#include "FirstLightGameTypes.h"
+#include "GameplayTagContainer.h"
+#include "FirstLight/AbilitySystem/Abilities/FLGameplayAbility.h"
+#include "FirstLight/ActorComponents/FootstepsComponent.h"
 #include "GameFramework/Character.h"
 #include "FirstLightCharacterBase.generated.h"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterBaseHitReactDelegate, EFLHitReactDirection, Direction);
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AFirstLightCharacterBase*, Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AFirstLightCharacterBase*, Character);
 
 UCLASS()
 class FIRSTLIGHT_API AFirstLightCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -81,6 +85,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "First Light|Character|Attributes")
 	float GetMoveSpeedBaseValue() const;
 
+	UFUNCTION(BlueprintCallable, Category = "First Light|Character")
 	virtual void Die();
 
 	UFUNCTION(BlueprintCallable, Category = "First Light|Character")
@@ -130,12 +135,12 @@ protected:
 	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
 	virtual void AddCharacterAbilities();
 
+	virtual void AddStartupEffects();
+
 	// Initialize the Character's attributes. Must run on Server but we run it on Client too
 	// so that we don't have to wait. The Server's replication to the Client won't matter since
 	// the values should be the same.
 	virtual void InitializeAttributes();
-
-	virtual void AddStartupEffects();
 
 
 	/**
@@ -148,7 +153,7 @@ protected:
 	virtual void SetStamina(float Stamina);
 
 	/**
-	 * Character Data functions
+	 * Added Character Data functions
 	 */
 	void AddStartupGameplayAbilities();
 	void ApplyStartupGameplayEffects();
@@ -163,7 +168,7 @@ protected:
 	
 	virtual void InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication = false);
 
-	UPROPERTY(EditDefaultsOnly, Category = "First Light")
+	UPROPERTY(EditDefaultsOnly, Category = "First Light|Abilities")
 	class UCharacterDataAsset* CharacterDataAsset;
 	
 public:
@@ -181,4 +186,36 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="First Light|Abilities")
 	TArray<TSubclassOf<UGameplayEffect>> PassiveGameplayEffects;
 	
+	virtual void Landed(const FHitResult& Hit) override;
+	
+	// --- ABILITY TAGS
+	
+	UPROPERTY(EditDefaultsOnly, Category = "First Light|Tags")
+	FGameplayTagContainer InAirTags;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "First Light|Tags")
+	FGameplayTagContainer SprintTags;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "First Light|Tags")
+	FGameplayTagContainer CombatTags;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "First Light|Tags")
+	FGameplayTag JumpEventTag;
+	
+	// Components
+	UFootstepsComponent* GetFootstepsComponent() const;
+	
+protected:
+
+	UPROPERTY(BlueprintReadOnly, Category="First Light")
+	class UFootstepsComponent* FootstepsComponent;
+
+	/**
+	 * Movement Attribute change
+	 */
+	
+	FDelegateHandle MaxMovementSpeedChangedDelegateHandle;
+	
+public:
+	void OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data);
 };

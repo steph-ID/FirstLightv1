@@ -6,8 +6,9 @@
 #include "FirstLight/AbilitySystem/Abilities/FLGameplayAbility.h"
 #include "FirstLight/ActorComponents/FLCharacterMovementComponent.h"
 #include "FirstLight/DataAssets/CharacterDataAsset.h"
-#include "GAS/FLAbilitySystemComponent.h"
-#include "GAS/FLAttributeSetBase.h"
+#include "FirstLight/AbilitySystem/FLAbilitySystemComponent.h"
+#include "FirstLight/AbilitySystem/FLAttributeSetBase.h"
+#include "FirstLight/AbilitySystem/Abilities/GA_Jump.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -28,6 +29,11 @@ AFirstLightCharacterBase::AFirstLightCharacterBase(const class FObjectInitialize
 	HitDirectionLeftTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Left"));
 	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
 	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag(FName("Effect.RemoveOnDeath"));
+	
+	/*TSubclassOf<UFLAttributeSetBase> UFLAttributeSetBase* 
+    const TSubclassOf<UFLAttributeSetBase> AttributeSet = UFLAttributeSetBase::StaticClass();
+	AttributeSetBase = AttributeSet.Get();*/
+	
 }
 
 UAbilitySystemComponent * AFirstLightCharacterBase::GetAbilitySystemComponent() const
@@ -238,7 +244,7 @@ void AFirstLightCharacterBase::Die()
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->Velocity = FVector(0);
 
-	//OnCharacterDied.Broadcast(this);
+	OnCharacterDied.Broadcast(this);
 
 	if (AbilitySystemComponent.IsValid())
 	{
@@ -302,15 +308,20 @@ void AFirstLightCharacterBase::InitializeAttributes()
 		return;
 	}
 
+	if (IsValid(CharacterDataAsset))
+	{
+		SetCharacterData(CharacterDataAsset->CharacterData);
+	}
+
 	// Can run on Server and Client
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	/*FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
 
 	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributes, GetCharacterLevel(), EffectContext);
 	if (NewHandle.IsValid())
 	{
 		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent.Get());
-	}
+	}*/
 }
 
 void AFirstLightCharacterBase::AddStartupEffects()
@@ -388,6 +399,7 @@ void AFirstLightCharacterBase::ApplyStartupGameplayEffects()
 		{
 			ApplyGameplayEffectToSelf(CharacterEffect, EffectContext);
 		}
+		AbilitySystemComponent->bStartupEffectsApplied = true;
 	}
 }
 
@@ -396,7 +408,7 @@ void AFirstLightCharacterBase::AddStartupGameplayAbilities()
 	//check(AbilitySystemComponent);
 	
 	// Grant abilities, but only on the server
-	if (HasAuthority() && !bAbilitiesInitialized)
+	if (HasAuthority() && !AbilitySystemComponent->bCharacterAbilitiesGiven)
 	{
 		/*for (TSubclassOf<UFLGameplayAbility> DefaultAbility : CharacterData.Abilities)
 		{
@@ -426,7 +438,7 @@ void AFirstLightCharacterBase::AddStartupGameplayAbilities()
 			}
 		}
 		
-		bAbilitiesInitialized = true;
+		AbilitySystemComponent->bCharacterAbilitiesGiven = true;
 	}
 }
 
@@ -449,7 +461,7 @@ void AFirstLightCharacterBase::SetCharacterData(const FCharacterData& InCharacte
 {
 	CharacterData = InCharacterData;
 
-	InitFromCharacterData(CharacterData);
+	InitFromCharacterData(CharacterData, true);
 }
 
 void AFirstLightCharacterBase::InitFromCharacterData(const FCharacterData& InCharacterData, bool bFromReplication)
@@ -467,4 +479,23 @@ void AFirstLightCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AFirstLightCharacterBase, CharacterData);
+}
+
+UFootstepsComponent* AFirstLightCharacterBase::GetFootstepsComponent() const
+{
+	return FootstepsComponent;
+}
+void AFirstLightCharacterBase::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(InAirTags);
+	}
+}
+
+void AFirstLightCharacterBase::OnMaxMovementSpeedChanged(const FOnAttributeChangeData& Data)
+{
+	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
 }

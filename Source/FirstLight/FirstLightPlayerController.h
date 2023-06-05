@@ -93,7 +93,8 @@ public:
 	bool SetRespawnCountdown_Validate(float RespawnTimeRemaining);
 
 	UPROPERTY(BlueprintReadWrite)
-	AFirstLightCharacter* PossessedPawn;
+	//AFirstLightCharacter* PossessedPawn;
+	AFirstLightCharacterBase* PossessedPawn;
 	
 	//--- Input Actions
 	UFUNCTION(BlueprintCallable)

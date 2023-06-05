@@ -7,7 +7,8 @@
 #include "FirstLight/FirstLight.h"
 #include "FLGameplayAbility.generated.h"
 
-class AFirstLightCharacter;
+//class AFirstLightCharacter;
+class AFirstLightCharacterBase;
 /**
  * 
  */
@@ -21,12 +22,13 @@ protected:
 	TArray<TSubclassOf<UGameplayEffect>> OngoingEffectsToRemoveOnEnd;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "First Light|Effects")
-	TArray<TSubclassOf<UGameplayEffect>> OngoingEffectsToJustApplyOnStart;
+	TArray<TSubclassOf<UGameplayEffect>> OngoingEffectsToOnlyApplyOnStart;
 	
 	TArray<FActiveGameplayEffectHandle> RemoveOnEndEffectHandles;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	AFirstLightCharacter* GetFirstLightCharacterFromActorInfo() const;
+	AFirstLightCharacterBase* GetFirstLightCharacterFromActorInfo() const;
+	//AFirstLightCharacter* GetFirstLightCharacterFromActorInfo() const;
 
 
 public:

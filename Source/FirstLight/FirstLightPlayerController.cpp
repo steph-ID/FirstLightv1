@@ -8,9 +8,10 @@
 #include "GameFramework/Controller.h"
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
+#include "ActorComponents/FLCharacterMovementComponent.h"
 #include "Core/FirstLightCharacterBase.h"
 #include "Core/FirstLightPlayerState.h"
-#include "GAS/FLAbilitySystemComponent.h"
+#include "FirstLight/AbilitySystem/FLAbilitySystemComponent.h"
 #include "Widgets/FirstLightGameWidget.h"
 #include "Widgets/FLDamageTextWidgetComponent.h"
 
@@ -24,7 +25,8 @@ void AFirstLightPlayerController::BeginPlay()
 	Super::BeginPlay();
 	
 	//GameModeRef = Cast<AFirstLightGameMode>(GetWorld()->GetAuthGameMode());
-	PossessedPawn = Cast<AFirstLightCharacter>(GetPawn());
+	//PossessedPawn = Cast<AFirstLightCharacter>(GetPawn());
+	PossessedPawn = Cast<AFirstLightCharacterBase>(GetPawn());
 	const AFirstLightPlayerState* FLPlayerState = GetPlayerState<AFirstLightPlayerState>();
 	AbilitySystemComponent = FLPlayerState->GetAbilitySystemComponent();
 }
@@ -210,15 +212,17 @@ void AFirstLightPlayerController::RequestJump()
 	Payload.Instigator = PossessedPawn;
 	Payload.EventTag = PossessedPawn->JumpEventTag;
 
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(PossessedPawn, PossessedPawn->JumpEventTag, Payload);
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(PossessedPawn, Payload.EventTag, Payload);
+		//AbilitySystemComponent->CancelAbilities(PossessedPawn->JumpEventTag);
+	//printf_s("this is a jump.");
 }
 
 void AFirstLightPlayerController::RequestStopJump()
 {
-	if (GetCharacter())
+	/*if (GetCharacter())
 	{
 		//GetCharacter()->StopJumping();
-	}
+	}*/
 }
 
 void AFirstLightPlayerController::RequestAttack()
@@ -251,6 +255,9 @@ void AFirstLightPlayerController::RequestSprint()
 	{
 		AbilitySystemComponent->TryActivateAbilitiesByTag(PossessedPawn->SprintTags);
 	}
+	/*UFLCharacterMovementComponent* MovementComp = Cast<UFLCharacterMovementComponent>(PossessedPawn->GetMovementComponent());
+	MovementComp->StartSprinting();
+	MovementComp->GetMaxSpeed();*/
 }
 
 void AFirstLightPlayerController::RequestStopSprint()
@@ -259,6 +266,8 @@ void AFirstLightPlayerController::RequestStopSprint()
 	{
 		AbilitySystemComponent->CancelAbilities(&PossessedPawn->SprintTags);
 	}
+	/*UFLCharacterMovementComponent* MovementComp = Cast<UFLCharacterMovementComponent>(PossessedPawn->GetMovementComponent());
+	MovementComp->StopSprinting();*/
 }
 
 // Server only

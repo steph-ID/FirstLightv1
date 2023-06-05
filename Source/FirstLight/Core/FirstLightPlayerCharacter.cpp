@@ -3,6 +3,7 @@
 
 #include "FirstLightPlayerCharacter.h"
 
+#include "EnhancedInputSubsystems.h"
 #include "FirstLightPlayerState.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
@@ -12,7 +13,7 @@
 #include "FirstLight/Controllers/FirstLightAIController.h"
 #include "FirstLight/Widgets/FLFloatingStatusBarWidget.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GAS/FLAbilitySystemComponent.h"
+#include "FirstLight/AbilitySystem/FLAbilitySystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -44,12 +45,12 @@ AFirstLightPlayerCharacter::AFirstLightPlayerCharacter(const class FObjectInitia
 	UIFloatingStatusBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	UIFloatingStatusBarComponent->SetDrawSize(FVector2D(500, 500));
 
-	UIFloatingStatusBarClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/GASDocumentation/UI/UI_FloatingStatusBar_Hero.UI_FloatingStatusBar_Hero_C"));
+	UIFloatingStatusBarClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/FirstLight/Content/FirstLight/UI/BP_FLFloatingStatusBarWidget.BP_FLFloatingStatusBarWidget_C"));
 	if (!UIFloatingStatusBarClass)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s() Failed to find UIFloatingStatusBarClass. If it was moved, please update the reference location in C++."), *FString(__FUNCTION__));
 	}
-
+    // TODO - use for attribute class?
 	AIControllerClass = AFirstLightAIController::StaticClass();
 
 	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
@@ -60,16 +61,25 @@ void AFirstLightPlayerCharacter::SetupPlayerInputComponent(UInputComponent* Play
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	/*PlayerInputComponent->BindAxis("MoveForward", this, &AFirstLightPlayerCharacter::MoveForward);
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = Cast<AFirstLightPlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+
+	/*PlayerInputComponent->BindAxis(MoveForward, this, &AFirstLightPlayerController::Move);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFirstLightPlayerCharacter::MoveRight);
 
 	PlayerInputComponent->BindAxis("LookUp", this, &AFirstLightPlayerCharacter::LookUp);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFirstLightPlayerCharacter::LookUpRate);
 	PlayerInputComponent->BindAxis("Turn", this, &AFirstLightPlayerCharacter::Turn);
-	PlayerInputComponent->BindAxis("TurnRate", this, &AFirstLightPlayerCharacter::TurnRate);
+	PlayerInputComponent->BindAxis("TurnRate", this, &AFirstLightPlayerCharacter::TurnRate);*/
 
 	// Bind player input to the AbilitySystemComponent. Also called in OnRep_PlayerState because of a potential race condition.
-	BindASCInput();*/
+	BindASCInput();
 }
 
 // Server only
@@ -88,6 +98,8 @@ void AFirstLightPlayerCharacter::PossessedBy(AController * NewController)
 
 		// Set the AttributeSetBase for convenience attribute functions
 		AttributeSetBase = PS->GetAttributeSetBase();
+		
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetMaxMovementSpeedAttribute()).AddUObject(this, &AFirstLightCharacterBase::OnMaxMovementSpeedChanged);
 
 		// If we handle players disconnecting and rejoining in the future, we'll have to change this so that possession from rejoining doesn't reset attributes.
 		// For now assume possession = spawn/respawn.
@@ -107,9 +119,11 @@ void AFirstLightPlayerCharacter::PossessedBy(AController * NewController)
 		// End respawn specific things
 
 
-		AddStartupEffects();
-
-		AddCharacterAbilities();
+		//AddStartupEffects();
+		//AddCharacterAbilities();
+		
+		ApplyStartupGameplayEffects();
+		AddStartupGameplayAbilities();
 
 		AFirstLightPlayerController* PC = Cast<AFirstLightPlayerController>(GetController());
 		if (PC)
@@ -178,7 +192,7 @@ void AFirstLightPlayerCharacter::BeginPlay()
 	// Only needed for Heroes placed in world and when the player is the Server.
 	// On respawn, they are set up in PossessedBy.
 	// When the player a client, the floating status bars are all set up in OnRep_PlayerState.
-	InitializeFloatingStatusBar();
+	//InitializeFloatingStatusBar();
 
 	StartingCameraBoomArmLength = CameraBoom->TargetArmLength;
 	StartingCameraBoomLocation = CameraBoom->GetRelativeLocation();
@@ -278,7 +292,7 @@ void AFirstLightPlayerCharacter::OnRep_PlayerState()
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
 
 		// Bind player input to the AbilitySystemComponent. Also called in SetupPlayerInputComponent because of a potential race condition.
-		//BindASCInput();
+		BindASCInput();
 
 		// Set the AttributeSetBase for convenience attribute functions
 		AttributeSetBase = PS->GetAttributeSetBase();
@@ -309,7 +323,7 @@ void AFirstLightPlayerCharacter::OnRep_PlayerState()
 	}
 }
 
-/*void AFirstLightPlayerCharacter::BindASCInput()
+void AFirstLightPlayerCharacter::BindASCInput()
 {
 	if (!ASCInputBound && AbilitySystemComponent.IsValid() && IsValid(InputComponent))
 	{
@@ -319,4 +333,4 @@ void AFirstLightPlayerCharacter::OnRep_PlayerState()
 
 		ASCInputBound = true;
 	}
-}*/
+}

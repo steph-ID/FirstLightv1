@@ -4,7 +4,8 @@
 #include "FLGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
-#include "FirstLight/Core/FirstLightCharacter.h"
+//#include "FirstLight/Core/FirstLightCharacter.h"
+#include "FirstLight/Core/FirstLightCharacterBase.h"
 
 UFLGameplayAbility::UFLGameplayAbility()
 {
@@ -16,9 +17,11 @@ UFLGameplayAbility::UFLGameplayAbility()
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")));
 }
 
-AFirstLightCharacter* UFLGameplayAbility::GetFirstLightCharacterFromActorInfo() const
+//AFirstLightCharacter* UFLGameplayAbility::GetFirstLightCharacterFromActorInfo() const
+AFirstLightCharacterBase* UFLGameplayAbility::GetFirstLightCharacterFromActorInfo() const
 {
-	return Cast<AFirstLightCharacter>(GetAvatarActorFromActorInfo());
+	//return Cast<AFirstLightCharacter>(GetAvatarActorFromActorInfo());
+	return Cast<AFirstLightCharacterBase>(GetAvatarActorFromActorInfo());
 }
 
 void UFLGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilitySpec & Spec)
@@ -37,9 +40,9 @@ void UFLGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	const FGameplayEffectContextHandle EffectContext = ActorInfo->AbilitySystemComponent->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContext = ActorInfo->AbilitySystemComponent->MakeEffectContext();
 
-	for (auto GameplayEffect : OngoingEffectsToJustApplyOnStart)
+	for (auto GameplayEffect : OngoingEffectsToOnlyApplyOnStart)
 	{
 		if (!GameplayEffect.Get()) continue;
 

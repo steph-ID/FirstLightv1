@@ -3,7 +3,8 @@
 
 #include "FirstLightAnimInstance.h"
 
-#include "FirstLight/Core/FirstLightCharacter.h"
+//#include "FirstLight/Core/FirstLightCharacter.h"
+#include "FirstLight/Core/FirstLightCharacterBase.h"
 #include "FirstLightGameTypes.h"
 #include "Animation/AnimationAsset.h"
 #include "Animation/BlendSpace.h"
@@ -11,7 +12,8 @@
 
 UBlendSpace* UFirstLightAnimInstance::GetLocomotionBlendSpace() const
 {
-	if(const AFirstLightCharacter* FirstLightCharacter = Cast<AFirstLightCharacter>(GetOwningActor()))
+	//if(const AFirstLightCharacter* FirstLightCharacter = Cast<AFirstLightCharacter>(GetOwningActor()))
+	if(const AFirstLightCharacterBase* FirstLightCharacter = Cast<AFirstLightCharacterBase>(GetOwningActor()))
 	{
 		if(const FCharacterData Data = FirstLightCharacter->GetCharacterData(); Data.CharacterAnimDataAsset)
 		{
@@ -23,7 +25,8 @@ UBlendSpace* UFirstLightAnimInstance::GetLocomotionBlendSpace() const
 
 UAnimSequenceBase* UFirstLightAnimInstance::GetIdleAnimation() const
 {
-	if(const AFirstLightCharacter* FirstLightCharacter = Cast<AFirstLightCharacter>(GetOwningActor()))
+	//if(const AFirstLightCharacter* FirstLightCharacter = Cast<AFirstLightCharacter>(GetOwningActor()))
+	if(const AFirstLightCharacterBase* FirstLightCharacter = Cast<AFirstLightCharacterBase>(GetOwningActor()))
 	{
 		FCharacterData Data = FirstLightCharacter->GetCharacterData();
 

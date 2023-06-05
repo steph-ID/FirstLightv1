@@ -22,7 +22,7 @@ class FIRSTLIGHT_API UGA_Jump : public UFLGameplayAbility
 
 protected:
 	
-/*	UPROPERTY(EditDefaultsOnly, Category="Effects")
+	/*UPROPERTY(EditDefaultsOnly, Category="Effects")
 	TSubclassOf<UGameplayEffect> JumpEffect;*/
 	
 };

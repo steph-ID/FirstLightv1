@@ -21,7 +21,7 @@ class UFLGameplayAbility;
 class UGameplayEffect;
 class UGameplayAbility;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AFirstLightCharacter*, Character);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AFirstLightCharacter*, Character);
 
 UCLASS(config=Game)
 class AFirstLightCharacter : public ACharacter, public IAbilitySystemInterface
@@ -54,8 +54,8 @@ public:
 
 	bool ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> Effect, FGameplayEffectContextHandle InEffectContext) const;
 
-	UPROPERTY(BlueprintAssignable, Category = "First Light|Character")
-	FCharacterDiedDelegate OnCharacterDied;
+	/*UPROPERTY(BlueprintAssignable, Category = "First Light|Character")
+	FCharacterDiedDelegate OnCharacterDied;*/
 
 	UFUNCTION(BlueprintCallable, Category = "First Light|Character")
 	virtual bool IsAlive() const;

@@ -3,10 +3,11 @@
 
 #include "FirstLightPlayerState.h"
 
+#include "FirstLightPlayerCharacter.h"
 #include "FirstLight/FirstLightPlayerController.h"
-#include "GAS/FLAbilitySystemComponent.h"
-#include "FirstLight/AbilitySystem/Abilities/FLGameplayAbility.h"
+#include "FirstLight/AbilitySystem/FLAbilitySystemComponent.h"
 #include "FirstLight/Widgets/FirstLightGameWidget.h"
+#include "FirstLight/Widgets/FLFloatingStatusBarWidget.h"
 
 AFirstLightPlayerState::AFirstLightPlayerState()
 {
@@ -14,7 +15,7 @@ AFirstLightPlayerState::AFirstLightPlayerState()
 	AbilitySystemComponent = CreateDefaultSubobject<UFLAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 
-	// Mixed mode means we only are replicated the GEs to ourself, not the GEs to simulated proxies. If another GDPlayerState (Hero) receives a GE,
+	// Mixed mode means we only are replicated the GEs to ourself, not the GEs to simulated proxies. If another GDPlayerState (Character) receives a GE,
 	// we won't be told about it by the Server. Attributes, GameplayTags, and GameplayCues will still replicate to us.
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
@@ -318,15 +319,15 @@ void AFirstLightPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 	float Health = Data.NewValue;
 
 	// Update floating status bar
-	AFirstLightCharacter* Character = Cast<AFirstLightCharacter>(GetPawn());
-	/*if (Character)
+	AFirstLightPlayerCharacter* Character = Cast<AFirstLightPlayerCharacter>(GetPawn());
+	if (Character)
 	{
-		UGDFloatingStatusBarWidget* HeroFloatingStatusBar = Character->GetFloatingStatusBar();
-		if (HeroFloatingStatusBar)
+		UFLFloatingStatusBarWidget* PlayerFloatingStatusBar = Character->GetFloatingStatusBar();
+		if (PlayerFloatingStatusBar)
 		{
-			HeroFloatingStatusBar->SetHealthPercentage(Health / GetMaxHealth());
+			PlayerFloatingStatusBar->SetHealthPercentage(Health / GetMaxHealth());
 		}
-	}*/
+	}
 
 	// Update the HUD
 	// Handled in the UI itself using the AsyncTaskAttributeChanged node as an example how to do it in Blueprint
@@ -343,6 +344,29 @@ void AFirstLightPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 
 void AFirstLightPlayerState::MaxHealthChanged(const FOnAttributeChangeData& Data)
 {
+	float MaxHealth = Data.NewValue;
+
+	// Update floating status bar
+	AFirstLightPlayerCharacter* Character = Cast<AFirstLightPlayerCharacter>(GetPawn());
+	if (Character)
+	{
+		UFLFloatingStatusBarWidget* PlayerFloatingStatusBar = Character->GetFloatingStatusBar();
+		if (PlayerFloatingStatusBar)
+		{
+			PlayerFloatingStatusBar->SetHealthPercentage(GetHealth() / MaxHealth);
+		}
+	}
+
+	// Update the HUD
+	AFirstLightPlayerController* PC = Cast<AFirstLightPlayerController>(GetOwner());
+	if (PC)
+	{
+		UFirstLightGameWidget* HUD = PC->GetHUD();
+		if (HUD)
+		{
+			HUD->SetMaxHealth(MaxHealth);
+		}
+	}
 }
 
 void AFirstLightPlayerState::HealthRegenRateChanged(const FOnAttributeChangeData& Data)
@@ -351,10 +375,48 @@ void AFirstLightPlayerState::HealthRegenRateChanged(const FOnAttributeChangeData
 
 void AFirstLightPlayerState::ManaChanged(const FOnAttributeChangeData& Data)
 {
+	float Mana = Data.NewValue;
+
+	// Update floating status bar
+	AFirstLightPlayerCharacter* Character = Cast<AFirstLightPlayerCharacter>(GetPawn());
+	if (Character)
+	{
+		UFLFloatingStatusBarWidget* PlayerFloatingStatusBar = Character->GetFloatingStatusBar();
+		if (PlayerFloatingStatusBar)
+		{
+			PlayerFloatingStatusBar->SetManaPercentage(Mana / GetMaxMana());
+		}
+	}
+
+	// Update the HUD
+	// Handled in the UI itself using the AsyncTaskAttributeChanged node as an example how to do it in Blueprint
 }
 
 void AFirstLightPlayerState::MaxManaChanged(const FOnAttributeChangeData& Data)
 {
+	float MaxMana = Data.NewValue;
+
+	// Update floating status bar
+	AFirstLightPlayerCharacter* Character = Cast<AFirstLightPlayerCharacter>(GetPawn());
+	if (Character)
+	{
+		UFLFloatingStatusBarWidget* PlayerFloatingStatusBar = Character->GetFloatingStatusBar();
+		if (PlayerFloatingStatusBar)
+		{
+			PlayerFloatingStatusBar->SetManaPercentage(GetMana() / MaxMana);
+		}
+	}
+
+	// Update the HUD
+	AFirstLightPlayerController* PC = Cast<AFirstLightPlayerController>(GetOwner());
+	if (PC)
+	{
+		UFirstLightGameWidget* HUD = PC->GetHUD();
+		if (HUD)
+		{
+			HUD->SetMaxMana(MaxMana);
+		}
+	}
 }
 
 void AFirstLightPlayerState::ManaRegenRateChanged(const FOnAttributeChangeData& Data)

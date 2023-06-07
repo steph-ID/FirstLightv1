@@ -302,15 +302,14 @@ void AFirstLightCharacterBase::InitializeAttributes()
 		return;
 	}
 
-	if (!DefaultAttributes)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
-		return;
-	}
-
 	if (IsValid(CharacterDataAsset))
 	{
 		SetCharacterData(CharacterDataAsset->CharacterData);
+	}
+	else if (!DefaultAttributes)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
+		return;
 	}
 
 	// Can run on Server and Client

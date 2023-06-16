@@ -260,9 +260,11 @@ void AFirstLightCharacterBase::Die()
 	if (DeathMontage)
 	{
 		PlayAnimMontage(DeathMontage);
+		//SetLifeSpan(2.f);
 	}
 	else
 	{
+		//SetLifeSpan(2.f);
 		FinishDying();
 	}
 }

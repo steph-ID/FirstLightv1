@@ -22,7 +22,7 @@ public class FirstLight : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] {
 			"GameplayTags",
 			"GameplayAbilities",
-			"GameplayTasks", "AITestSuite",
+			"GameplayTasks", "AITestSuite", "Niagara",
 		});
 	}
 }

@@ -7,6 +7,9 @@
 #define ACTOR_ROLE_FSTRING *(FindObject<UEnum>(nullptr, TEXT("/Script/Engine.ENetRole"), true)->GetNameStringByValue(GetLocalRole()))
 #define GET_ACTOR_ROLE_FSTRING(Actor) *(FindObject<UEnum>(nullptr, TEXT("/Script/Engine.ENetRole"), true)->GetNameStringByValue(Actor->GetLocalRole()))
 
+#define CUSTOM_DEPTH_RED 250
+#define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1
+
 UENUM(BlueprintType)
 enum class EFLHitReactDirection : uint8
 {

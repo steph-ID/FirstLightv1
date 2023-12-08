@@ -21,7 +21,7 @@ public:
 	AFirstLightPlayerState();
 	
 	// Implement IAbilitySystemInterface
-	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	class UFLAttributeSetBase* GetAttributeSetBase() const;
 	

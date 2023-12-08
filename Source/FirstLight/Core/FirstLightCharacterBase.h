@@ -32,7 +32,7 @@ public:
 	FCharacterDiedDelegate OnCharacterDied;
 
 	// Implement IAbilitySystemInterface
-	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "First Light|Character")
 	virtual bool IsAlive() const;

@@ -31,7 +31,7 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
 	/**
-	 * Attributes
+	 * Vital Attributes
 	 */
 		
 	UPROPERTY(BlueprintReadOnly, Category = "First Light|Character Attributes", ReplicatedUsing = OnRep_CharacterLevel)
@@ -79,9 +79,23 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "First Light|Character Attributes", ReplicatedUsing = OnRep_Armor)
 	FGameplayAttributeData Armor;
 
+	/**
+	 * XP & Gold Attributes
+	*/
+
 	UPROPERTY(BlueprintReadOnly, Category = "First Light|Character Attributes", ReplicatedUsing = OnRep_Gold)
 	FGameplayAttributeData Gold;
-	
+		
+	UPROPERTY(BlueprintReadOnly, Category = "First Light|Character Attributes", ReplicatedUsing = OnRep_XPBounty)
+	FGameplayAttributeData XPBounty;
+
+	UPROPERTY(BlueprintReadOnly, Category = "First Light|Character Attributes", ReplicatedUsing = OnRep_GoldBounty)
+	FGameplayAttributeData GoldBounty;
+
+	/**
+	 * Arena Attributes
+	 */
+			
 	UPROPERTY(BlueprintReadOnly, Category = "First Light|Arena", ReplicatedUsing = OnRep_ArenaLevel)
 	FGameplayAttributeData ArenaLevel;
 
@@ -105,47 +119,51 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "First Light|Arena", ReplicatedUsing = OnRep_ArenaDeaths)
 	FGameplayAttributeData ArenaDeaths;
-
-	UPROPERTY(BlueprintReadOnly, Category = "First Light|Character Attributes", ReplicatedUsing = OnRep_XPBounty)
-	FGameplayAttributeData XPBounty;
-
-	UPROPERTY(BlueprintReadOnly, Category = "First Light|Character Attributes", ReplicatedUsing = OnRep_GoldBounty)
-	FGameplayAttributeData GoldBounty;
 	
-	// Meta Attributes
+	/**
+	 * Meta Attributes
+	*/
+		
+	UPROPERTY(BlueprintReadOnly, Category = "Damage")
+	FGameplayAttributeData IncomingDamage;
+		
 	UPROPERTY(BlueprintReadOnly, Category = "Damage")
 	FGameplayAttributeData Damage;
 
-	// Attribute Accessors
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, CharacterLevel)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, XP)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxXP)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Health)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxHealth)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, HealthRegenRate)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Mana)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxMana)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ManaRegenRate)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Stamina)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxStamina)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, StaminaRegenRate)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MovementSpeed)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxMovementSpeed)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Armor)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Gold)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaLevel)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaXP)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaMaxXP)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaScore)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaTopScore)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaKills)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaAssists)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaDeaths)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, XPBounty)
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, GoldBounty)
+	/**
+	 * Attribute Accessors
+	 */
+		
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, CharacterLevel);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, XP);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxXP);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Health);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxHealth);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, HealthRegenRate);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Mana);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxMana);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ManaRegenRate);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Stamina);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxStamina);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, StaminaRegenRate);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MovementSpeed);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxMovementSpeed);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Armor);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Gold);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaLevel);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaXP);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaMaxXP);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaScore);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaTopScore);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaKills);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaAssists);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaDeaths);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, XPBounty);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, GoldBounty);
 	
 	// Attribute Accessors for Meta Attributes
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Damage)
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, IncomingDamage);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Damage);
 
 	void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
 									 const FGameplayAttributeData& MaxAttribute, float NewMaxValue,

@@ -4,7 +4,7 @@
 #include "FootstepsComponent.h"
 
 //#include "FirstLight/Core/FirstLightCharacter.h"
-#include "FirstLight/Core/FirstLightCharacterBase.h"
+#include "FirstLight/Character/FirstLightCharacterBase.h"
 #include "FirstLight/PhysicalMaterials/FirstLightPhysicalMaterial.h"
 #include "Kismet/GameplayStatics.h"
 

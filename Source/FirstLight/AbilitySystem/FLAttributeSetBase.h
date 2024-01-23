@@ -126,6 +126,12 @@ public:
 		
 	UPROPERTY(BlueprintReadOnly, Category = "Damage")
 	FGameplayAttributeData IncomingDamage;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Rewards")
+	FGameplayAttributeData IncomingXP;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Rewards")
+	FGameplayAttributeData IncomingArenaXP;
 		
 	UPROPERTY(BlueprintReadOnly, Category = "Damage")
 	FGameplayAttributeData Damage;
@@ -148,7 +154,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, StaminaRegenRate);
 	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MovementSpeed);
 	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, MaxMovementSpeed);
-	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Armor);
 	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Gold);
 	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaLevel);
 	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, ArenaXP);
@@ -163,6 +168,8 @@ public:
 	
 	// Attribute Accessors for Meta Attributes
 	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, IncomingDamage);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, IncomingXP);
+	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, IncomingArenaXP);
 	ATTRIBUTE_ACCESSORS(UFLAttributeSetBase, Damage);
 
 	void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,

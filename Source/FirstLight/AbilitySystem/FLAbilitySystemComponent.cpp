@@ -8,3 +8,16 @@ void UFLAbilitySystemComponent::ReceiveDamage(UFLAbilitySystemComponent* SourceA
 {
 	ReceivedDamage.Broadcast(SourceAsc, UnmitigatedDamage, MitigatedDamage);
 }
+
+void UFLAbilitySystemComponent::AbilityActorInfoSet()
+{
+	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UFLAbilitySystemComponent::EffectApplied);
+}
+
+void UFLAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
+	const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+{
+	FGameplayTagContainer TagContainer;
+	EffectSpec.GetAllAssetTags(TagContainer);
+	EffectAssetTags.Broadcast(TagContainer);
+}

@@ -3,7 +3,7 @@
 #include "FirstLightGameMode.h"
 
 #include "FirstLightPlayerController.h"
-#include "Core/FirstLightPlayerCharacter.h"
+#include "Player/FirstLightPlayerCharacter.h"
 #include "GameFramework/SpectatorPawn.h"
 #include "Kismet/GameplayStatics.h"
 

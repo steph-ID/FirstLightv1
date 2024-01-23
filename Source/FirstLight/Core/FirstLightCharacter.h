@@ -10,6 +10,7 @@
 #include "FirstLightGameTypes.h"
 #include "FirstLight/AbilitySystem/Abilities/FLGameplayAbility.h"
 #include "FirstLight/ActorComponents/FootstepsComponent.h"
+#include "FirstLight/Interaction/CombatInterface.h"
 #include "FirstLightCharacter.generated.h"
 
 class AFirstLightPlayerState;

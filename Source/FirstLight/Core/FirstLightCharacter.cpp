@@ -14,7 +14,7 @@
 #include "FirstLight/AbilitySystem/Abilities/FLGameplayAbility.h"
 #include "FirstLight/ActorComponents/FLCharacterMovementComponent.h"
 #include "FirstLight/ActorComponents/FootstepsComponent.h"
-#include "FirstLightPlayerState.h"
+#include "FirstLight/Player/FirstLightPlayerState.h"
 #include "FirstLight/DataAssets/CharacterDataAsset.h"
 #include "FirstLight/AbilitySystem/FLAttributeSetBase.h"
 #include "FirstLight/AbilitySystem/FLAbilitySystemComponent.h"
@@ -381,7 +381,7 @@ void AFirstLightCharacter::AddStartupGameplayAbilities()
 			if (NewHandle.IsValid())
 			{
 				FActiveGameplayEffectHandle ActiveGameplayEffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(
-					*NewHandle.Data.Get(), GetFLPlayerState()->GetFLAbilitySystemComponent());
+					*NewHandle.Data.Get(), GetFLPlayerState()->GetAbilitySystemComponent());
 			}
 		}
 		

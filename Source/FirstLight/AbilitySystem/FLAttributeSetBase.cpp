@@ -5,7 +5,7 @@
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 //#include "FirstLight/Core/FirstLightCharacter.h"
-#include "FirstLight/Core/FirstLightCharacterBase.h"
+#include "FirstLight/Character/FirstLightCharacterBase.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -123,6 +123,28 @@ void UFLAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
 			const bool bFatal = NewHealth <= 0.f;
+		}
+	}
+	
+	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+	{
+		const float LocalIncomingXP = GetIncomingXP();
+		SetIncomingXP(0.f);
+		if (LocalIncomingXP > 0.f)
+		{
+			const float NewXP = GetXP() + LocalIncomingXP;
+			SetXP(NewXP);
+		}
+	}
+	
+	if (Data.EvaluatedData.Attribute == GetIncomingArenaXPAttribute())
+	{
+		const float LocalIncomingArenaXP = GetIncomingArenaXP();
+		SetIncomingArenaXP(0.f);
+		if (LocalIncomingArenaXP > 0.f)
+		{
+			const float NewArenaXP = GetArenaXP() + LocalIncomingArenaXP;
+			SetArenaXP(NewArenaXP);
 		}
 	}
 	

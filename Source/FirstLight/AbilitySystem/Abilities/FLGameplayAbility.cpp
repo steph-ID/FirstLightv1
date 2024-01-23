@@ -5,7 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
 //#include "FirstLight/Core/FirstLightCharacter.h"
-#include "FirstLight/Core/FirstLightCharacterBase.h"
+#include "FirstLight/Character/FirstLightCharacterBase.h"
 
 UFLGameplayAbility::UFLGameplayAbility()
 {

@@ -4,7 +4,7 @@
 #include "AnimNotify_Step.h"
 
 //#include "FirstLight/Core/FirstLightCharacter.h"
-#include "FirstLight/Core/FirstLightCharacterBase.h"
+#include "FirstLight/Character/FirstLightCharacterBase.h"
 
 void UAnimNotify_Step::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {

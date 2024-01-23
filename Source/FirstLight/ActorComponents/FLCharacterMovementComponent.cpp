@@ -3,7 +3,7 @@
 
 #include "FLCharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
-#include "FirstLight/Core/FirstLightCharacterBase.h"
+#include "FirstLight/Character/FirstLightCharacterBase.h"
 #include "GameplayTagContainer.h"
 
 UFLCharacterMovementComponent::UFLCharacterMovementComponent()

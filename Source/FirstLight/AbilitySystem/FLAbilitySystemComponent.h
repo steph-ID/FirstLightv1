@@ -7,6 +7,7 @@
 #include "FLAbilitySystemComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFLAbilitySystemComponent*, SourceAsc, float, UnmitigatedDamage, float, MitigatedDamage);
+DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /*AssetTags*/);
 
 /**
  * 
@@ -25,4 +26,11 @@ public:
 	FReceivedDamageDelegate ReceivedDamage;
 
 	virtual void ReceiveDamage(UFLAbilitySystemComponent* SourceAsc, float UnmitigatedDamage, float MitigatedDamage);
+	void AbilityActorInfoSet();
+
+	FEffectAssetTags EffectAssetTags;
+
+protected:
+	void EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec,
+	FActiveGameplayEffectHandle ActiveEffectHandle);
 };

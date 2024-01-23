@@ -4,7 +4,7 @@
 #include "FirstLightAnimInstance.h"
 
 //#include "FirstLight/Core/FirstLightCharacter.h"
-#include "FirstLight/Core/FirstLightCharacterBase.h"
+#include "FirstLight/Character/FirstLightCharacterBase.h"
 #include "FirstLightGameTypes.h"
 #include "Animation/AnimationAsset.h"
 #include "Animation/BlendSpace.h"
